@@ -1,3 +1,11 @@
+-- My config
+local opts = { noremap = true, silent = true }
+vim.api.nvim_set_keymap('n', 'd', '"_d', opts)
+vim.api.nvim_set_keymap('v', 'd', '"_d', opts)
+
+vim.keymap.set('n', '<leader>m', '<cmd>m +1<CR>', { desc = 'move line up' })
+vim.keymap.set('n', '<leader>n', '<cmd>m -2<CR>', { desc = 'move line down' })
+
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
@@ -16,7 +24,7 @@ vim.g.have_nerd_font = true
 vim.opt.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
--- vim.opt.relativenumber = true
+vim.opt.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
@@ -139,6 +147,40 @@ vim.opt.rtp:prepend(lazypath)
 --
 -- NOTE: Here is where you install your plugins.
 require('lazy').setup({
+
+  -- NOTE: Toggle terminal
+  {
+    'akinsho/toggleterm.nvim',
+    config = function()
+      require('toggleterm').setup {
+        open_mapping = [[<c-\>]],
+        shade_terminals = false,
+        -- add --login so ~/.zprofile is loaded
+        -- https://vi.stackexchange.com/questions/16019/neovim-terminal-not-reading-bash-profile/16021#16021
+        shell = 'zsh --login',
+      }
+    end,
+    keys = {
+      { [[<C-\>]] },
+      { '<leader>0', '<Cmd>2ToggleTerm<Cr>', desc = 'Terminal #2' },
+      {
+        '<leader>td',
+        '<cmd>ToggleTerm size=20 dir=./ direction=horizontal<cr>',
+        desc = 'Open a horizontal terminal at the Desktop directory',
+      },
+    },
+  },
+
+  -- NOTE: show function signature
+  {
+    'ray-x/lsp_signature.nvim',
+    event = 'VeryLazy',
+    opts = {},
+    config = function(_, opts)
+      require('lsp_signature').setup(opts)
+    end,
+  },
+
   -- NOTE: Auto-close brackets.
   {
     'windwp/nvim-autopairs',
